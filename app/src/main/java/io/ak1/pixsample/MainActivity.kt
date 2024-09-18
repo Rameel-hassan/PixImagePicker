@@ -55,18 +55,7 @@ class MainActivity : AppCompatActivity() {
             }
             mode = when (sp.getString("mode", "0")) {
                 "1" -> Mode.Picture
-                "2" -> Mode.Video
                 else -> Mode.All
-            }
-            videoOptions = VideoOptions().apply {
-                videoDurationLimitInSeconds = try {
-                    sp.getString("videoDuration", "30")?.toInt() ?: 30
-                } catch (e: Exception) {
-                    sp.apply {
-                        edit().putString("videoDuration", "30").commit()
-                    }
-                    30
-                }
             }
             count = try {
                 sp.getString("count", "1")?.toInt() ?: 1

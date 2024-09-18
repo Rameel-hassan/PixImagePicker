@@ -79,7 +79,6 @@ internal fun FragmentPixBinding.setupClickControls(
     gridLayout.controlsLayout.messageBottom.setText(
         when (options.mode) {
             Mode.Picture -> R.string.pix_bottom_message_without_video
-            Mode.Video -> R.string.pix_bottom_message_with_only_video
             else -> R.string.pix_bottom_message_with_video
         }
     )
@@ -119,50 +118,8 @@ internal fun FragmentPixBinding.setupClickControls(
                 return@setOnLongClickListener false
             }
             callback(4, Uri.EMPTY)
-            isRecording = true
-            videoCounterLayout.videoCounterLayout.show()
-            videoCounterProgress = 0
-            videoCounterLayout.videoPbr.progress = 0
-            videoCounterRunnable = object : Runnable {
-                override fun run() {
-                    ++videoCounterProgress
-
-                    videoCounterLayout.videoPbr.progress = videoCounterProgress
-                    videoCounterLayout.videoCounter.text =
-                        videoCounterProgress.counterText
 
 
-                    if (videoCounterProgress > options.videoOptions.videoDurationLimitInSeconds) {
-                        gridLayout.initialRecyclerviewContainer.apply {
-                            alpha = 1f
-                            translationY = 0f
-                        }
-                        callback(5, Uri.EMPTY)
-                        isRecording = false
-                        videoCounterLayout.videoCounterLayout.hide()
-                        videoCounterHandler.removeCallbacks(videoCounterRunnable)
-                        videoRecordingEndAnim()
-                        cameraXManager?.videoCapture?.stopRecording()
-                    } else {
-                        videoCounterHandler.postDelayed(this, 1000)
-                    }
-                }
-            }
-            videoCounterHandler.postDelayed(videoCounterRunnable, 1000)
-            videoRecordingStartAnim()
-            val maxVideoDuration = options.videoOptions.videoDurationLimitInSeconds
-            videoCounterLayout.videoPbr.max = maxVideoDuration / 1000
-            videoCounterLayout.videoPbr.invalidate()
-            gridLayout.initialRecyclerviewContainer.animate().translationY(500f).alpha(0f)
-                .setDuration(200).start()
-            cameraXManager?.takeVideo { uri, exc ->
-                if (exc == null) {
-                    callback(3, uri)
-                } else {
-                    Log.e(TAG, "$exc")
-                }
-
-            }
             true
         }
         setOnTouchListener { _, event ->
@@ -185,18 +142,6 @@ internal fun FragmentPixBinding.setupClickControls(
                     .scaleY(1.2f).setDuration(300)
                     .setInterpolator(AccelerateDecelerateInterpolator()).start()
                 root.requestDisallowInterceptTouchEvent(true)
-            }
-            if ((event.action == MotionEvent.ACTION_UP || event.action == MotionEvent.ACTION_CANCEL) && isRecording) {
-                gridLayout.initialRecyclerviewContainer.apply {
-                    alpha = 1f
-                    translationY = 0f
-                }
-                callback(5, Uri.EMPTY)
-                isRecording = false
-                videoCounterLayout.videoCounterLayout.hide()
-                videoCounterHandler.removeCallbacks(videoCounterRunnable)
-                videoRecordingEndAnim()
-                cameraXManager?.videoCapture?.stopRecording()
             }
             false
         }

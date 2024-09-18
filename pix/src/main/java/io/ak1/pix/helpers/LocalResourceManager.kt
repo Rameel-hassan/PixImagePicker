@@ -20,7 +20,6 @@ import kotlin.coroutines.cancellation.CancellationException
 
 fun Context.getImageVideoCursor(mode: Mode): Cursor? {
     val projection = when (mode) {
-        Mode.Video -> VIDEO_SELECTION
         Mode.Picture -> IMAGE_SELECTION
         else -> IMAGE_VIDEO_SELECTION
     }

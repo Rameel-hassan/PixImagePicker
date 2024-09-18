@@ -36,7 +36,6 @@ class CameraXManager(
     private val executor = ContextCompat.getMainExecutor(requireActivity)
     private var lensFacing: Int = CameraSelector.LENS_FACING_BACK
     var imageCapture: ImageCapture? = null
-    var videoCapture: VideoCapture? = null
     private var useCases = ArrayList<UseCase>()
     private var preview: Preview? = null
     private var cameraProvider: ProcessCameraProvider? = null
@@ -120,15 +119,6 @@ class CameraXManager(
                     .build()
                 useCases.add(imageCapture!!)
             }
-            Mode.Video -> {
-                videoCapture = createVideoCaptureUseCase(
-                    screenAspectRatio,
-                    options.videoOptions.videoBitrate,
-                    options.videoOptions.audioBitrate,
-                    options.videoOptions.videoFrameRate
-                )
-                useCases.add(videoCapture!!)
-            }
             else -> {
                 imageCapture = ImageCapture.Builder().apply {
                     setFlashMode(
@@ -149,13 +139,6 @@ class CameraXManager(
                     .setTargetRotation(rotation)
                     .build()
                 useCases.add(imageCapture!!)
-                videoCapture = createVideoCaptureUseCase(
-                    screenAspectRatio,
-                    options.videoOptions.videoBitrate,
-                    options.videoOptions.audioBitrate,
-                    options.videoOptions.videoFrameRate
-                )
-                useCases.add(videoCapture!!)
             }
         }
 
@@ -183,24 +166,6 @@ class CameraXManager(
         } catch (exc: Exception) {
             Log.e(TAG, "Use case binding failed", exc)
         }
-    }
-
-
-    @SuppressLint("RestrictedApi")
-    private fun createVideoCaptureUseCase(
-        screenAspectRatio: Int, videoBitrate: Int?,
-        audioBitrate: Int?,
-        videoFrameRate: Int?
-    ): VideoCapture {
-        val builder = VideoCapture.Builder().apply {
-            //setTargetRotation(previewView.display.rotation)
-            // setAudioRecordSource()
-            //setAudioSource(MediaRecorder.AudioSource
-            videoBitrate?.let { setBitRate(it) }
-            audioBitrate?.let { setAudioBitRate(it) }
-            videoFrameRate?.let { setVideoFrameRate(it) }
-        }.setTargetAspectRatio(screenAspectRatio)
-        return builder.build()
     }
 
 
@@ -307,34 +272,6 @@ class CameraXManager(
                     callback(savedUri, null)
                 }
             })
-    }
-
-    @SuppressLint("RestrictedApi", "MissingPermission")
-    fun takeVideo(callback: (Uri, String?) -> Unit) {
-        val videoFile = File(
-            getOutputDirectory(),
-            SimpleDateFormat(
-                FILENAME_FORMAT, Locale.US
-            ).format(System.currentTimeMillis()) + ".mp4"
-        )
-        videoCapture?.startRecording(
-            VideoCapture.OutputFileOptions.Builder(videoFile).build(),
-            executor,
-            object : VideoCapture.OnVideoSavedCallback {
-                override fun onVideoSaved(outputFileResults: VideoCapture.OutputFileResults) {
-                    val savedUri = Uri.fromFile(videoFile)
-                    val msg = "Photo capture succeeded: $savedUri"
-                    Log.e(TAG, msg)
-                    outputFileResults.savedUri
-                    callback(outputFileResults.savedUri ?: Uri.EMPTY, null)
-                }
-
-                override fun onError(videoCaptureError: Int, message: String, cause: Throwable?) {
-                    Log.e(TAG, "video Capture failed: $message", cause)
-                    callback(Uri.EMPTY, message)
-                }
-            })
-        //videoCapture?.stopRecording()
     }
 
     private fun getOutputDirectory(): File {

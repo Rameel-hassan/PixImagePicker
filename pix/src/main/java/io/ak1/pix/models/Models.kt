@@ -43,7 +43,7 @@ class Options : Parcelable {
 
 @Parcelize
 enum class Mode : Parcelable {
-    All, Picture, Video
+    All, Picture
 }
 @SuppressLint("ParcelCreator")
 @Parcelize
