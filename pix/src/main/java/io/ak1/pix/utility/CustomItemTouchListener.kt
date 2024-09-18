@@ -13,7 +13,7 @@ class CustomItemTouchListener(private val binding: FragmentPixBinding) :
     RecyclerView.OnItemTouchListener {
     override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
         val action = e.action
-        return if (binding.gridLayout.instantRecyclerView.canScrollHorizontally(RecyclerView.FOCUS_FORWARD)) {
+        return if (binding.instantRecyclerView.canScrollHorizontally(RecyclerView.FOCUS_FORWARD)) {
             when (action) {
                 MotionEvent.ACTION_MOVE -> binding.root.requestDisallowInterceptTouchEvent(true)
             }
@@ -22,7 +22,7 @@ class CustomItemTouchListener(private val binding: FragmentPixBinding) :
             when (action) {
                 MotionEvent.ACTION_MOVE -> binding.root.requestDisallowInterceptTouchEvent(false)
             }
-            binding.gridLayout.instantRecyclerView.removeOnItemTouchListener(this)
+            binding.instantRecyclerView.removeOnItemTouchListener(this)
             true
         }
     }

@@ -58,31 +58,31 @@ fun getValueInRange(min: Int, max: Int, value: Int): Int {
 
 internal fun FragmentPixBinding.setViewPositions(y: Float) {
     val handleY: Int = getValueInRange(
-        0, (mViewHeight - gridLayout.fastscrollHandle.height).toInt(),
-        (y - gridLayout.fastscrollHandle.height / 2).toInt()
+        0, (mViewHeight -  fastscrollHandle.height).toInt(),
+        (y -  fastscrollHandle.height / 2).toInt()
     )
-    gridLayout.fastscrollBubble.y = handleY + root.context.toPx(60f)
-    gridLayout.fastscrollHandle.y = handleY.toFloat()
+     fastscrollBubble.y = handleY + root.context.toPx(60f)
+     fastscrollHandle.y = handleY.toFloat()
 }
 
 
 fun FragmentPixBinding.hideScrollbar() {
     //val transX = resources.getDimensionPixelSize(R.dimen.fastscroll_scrollbar_padding_end).toFloat()
     mScrollbarAnimator =
-        gridLayout.fastscrollScrollbar.animate().translationX(
-            gridLayout.fastscrollScrollbar.width.toFloat()
+         fastscrollScrollbar.animate().translationX(
+             fastscrollScrollbar.width.toFloat()
         ).alpha(0f)
             .setDuration(sScrollbarAnimDuration.toLong())
             .setListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator) {
                     super.onAnimationEnd(animation)
-                    gridLayout.fastscrollScrollbar.hide()
+                     fastscrollScrollbar.hide()
                     mScrollbarAnimator = null
                 }
 
                 override fun onAnimationCancel(animation: Animator) {
                     super.onAnimationCancel(animation)
-                    gridLayout.fastscrollScrollbar.hide()
+                     fastscrollScrollbar.hide()
                     mScrollbarAnimator = null
                 }
             })
@@ -95,7 +95,7 @@ fun scrollListener(
 ): RecyclerView.OnScrollListener =
     object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-            if (!binding.gridLayout.fastscrollHandle.isSelected && recyclerView.isEnabled) {
+            if (!binding. fastscrollHandle.isSelected && recyclerView.isEnabled) {
                 binding.setViewPositions(getScrollProportion(recyclerView))
             }
         }
@@ -106,19 +106,19 @@ fun scrollListener(
                 when (newState) {
                     RecyclerView.SCROLL_STATE_DRAGGING -> {
                         handler.removeCallbacks(fragment.mScrollbarHider)
-                        if (binding.gridLayout.fastscrollScrollbar.visibility != View.VISIBLE) {
+                        if (binding. fastscrollScrollbar.visibility != View.VISIBLE) {
                             cancelAnimation(mScrollbarAnimator)
-                            if (!binding.gridLayout.fastscrollScrollbar.isVisible && (recyclerView.computeVerticalScrollRange()
+                            if (!binding. fastscrollScrollbar.isVisible && (recyclerView.computeVerticalScrollRange()
                                         - mViewHeight > 0)
                             ) {
                                 mScrollbarAnimator = showScrollbar(
-                                    binding.gridLayout.fastscrollScrollbar,
-                                    binding.gridLayout.fastscrollScrollbar.context
+                                    binding. fastscrollScrollbar,
+                                    binding. fastscrollScrollbar.context
                                 )
                             }
                         }
                     }
-                    RecyclerView.SCROLL_STATE_IDLE -> if (mHideScrollbar && !binding.gridLayout.fastscrollHandle.isSelected) {
+                    RecyclerView.SCROLL_STATE_IDLE -> if (mHideScrollbar && !binding. fastscrollHandle.isSelected) {
                         handler.postDelayed(fragment.mScrollbarHider, sScrollbarHideDelay.toLong())
                     }
                     else -> {
@@ -137,19 +137,19 @@ fun getScrollProportion(recyclerView: RecyclerView?): Float {
 }
 
 fun FragmentPixBinding.hideBubble() {
-    if (gridLayout.fastscrollBubble.isVisible) {
-        mBubbleAnimator = gridLayout.fastscrollBubble.animate().alpha(0f)
+    if ( fastscrollBubble.isVisible) {
+        mBubbleAnimator =  fastscrollBubble.animate().alpha(0f)
             .setDuration(sBubbleAnimDuration.toLong())
             .setListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator) {
                     super.onAnimationEnd(animation)
-                    gridLayout.fastscrollBubble.hide()
+                     fastscrollBubble.hide()
                     mBubbleAnimator = null
                 }
 
                 override fun onAnimationCancel(animation: Animator) {
                     super.onAnimationCancel(animation)
-                    gridLayout.fastscrollBubble.hide()
+                     fastscrollBubble.hide()
                     mBubbleAnimator = null
                 }
             })
@@ -159,29 +159,29 @@ fun FragmentPixBinding.hideBubble() {
 
 
 fun FragmentPixBinding.setRecyclerViewPosition(y: Float) {
-    if (gridLayout.recyclerView.adapter != null) {
-        val itemCount = gridLayout.recyclerView.adapter!!.itemCount
+    if ( recyclerView.adapter != null) {
+        val itemCount =  recyclerView.adapter!!.itemCount
         val proportion: Float = when {
-            gridLayout.fastscrollHandle.y == 0f -> 0f
-            gridLayout.fastscrollHandle.y + gridLayout.fastscrollHandle.height >= mViewHeight - sTrackSnapRange -> 1f
+             fastscrollHandle.y == 0f -> 0f
+             fastscrollHandle.y +  fastscrollHandle.height >= mViewHeight - sTrackSnapRange -> 1f
             else -> y / mViewHeight
         }
         val scrolledItemCount = (proportion * itemCount).roundToInt()
         val targetPos: Int = getValueInRange(0, itemCount - 1, scrolledItemCount)
-        gridLayout.recyclerView.layoutManager!!.scrollToPosition(targetPos)
+         recyclerView.layoutManager!!.scrollToPosition(targetPos)
         val text = mainImageAdapter.getSectionMonthYearText(targetPos)
-        gridLayout.fastscrollBubble.text = text
+         fastscrollBubble.text = text
         if (text.equals("", ignoreCase = true)) {
-            gridLayout.fastscrollBubble.hide()
+             fastscrollBubble.hide()
         }
     }
 }
 
 fun FragmentPixBinding.showBubble() {
-    if (!gridLayout.fastscrollBubble.isVisible) {
-        gridLayout.fastscrollBubble.show()
-        gridLayout.fastscrollBubble.alpha = 0f
-        mBubbleAnimator = gridLayout.fastscrollBubble
+    if (! fastscrollBubble.isVisible) {
+         fastscrollBubble.show()
+         fastscrollBubble.alpha = 0f
+        mBubbleAnimator =  fastscrollBubble
             .animate()
             .alpha(1f)
             .setDuration(sBubbleAnimDuration.toLong())

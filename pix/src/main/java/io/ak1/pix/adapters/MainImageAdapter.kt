@@ -130,6 +130,8 @@ internal class MainImageAdapter(context: Context, internal val spanCount: Int) :
 
 
     override fun bindHeaderData(header: View, headerPosition: Int) {
+        if (itemList.size<1)
+            return
         val image = itemList[headerPosition]
         (header.findViewById<View>(R.id.header) as TextView).text = image.headerDate
     }
