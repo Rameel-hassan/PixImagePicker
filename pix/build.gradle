@@ -4,8 +4,6 @@ plugins {
     id 'kotlin-parcelize'
     id 'maven-publish'
     id 'com.google.devtools.ksp'
-
-
 }
 
 android {

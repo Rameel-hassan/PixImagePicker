@@ -77,7 +77,7 @@ fun Context.scanPhoto(file: File, callback: ((Uri) -> Unit)? = null) =
 fun FragmentActivity.setUpMargins(binding: FragmentPixBinding) {
     val height =
         if (this@setUpMargins.navigationBarHeight < 50) 0 else this@setUpMargins.navigationBarHeight
-    binding.gridLayout.mainContent.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+    binding.mainContent.updateLayoutParams<ViewGroup.MarginLayoutParams> {
         updateMargins(
             0,
             this@setUpMargins.statusBarHeight,
@@ -85,10 +85,10 @@ fun FragmentActivity.setUpMargins(binding: FragmentPixBinding) {
             height
         )
     }
-    binding.gridLayout.controlsLayout.controlsLayout.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+    binding.controlsLayout.updateLayoutParams<ViewGroup.MarginLayoutParams> {
         updateMargins(0, 0, 0, height)
     }
-    binding.gridLayout.sendButton.apply {
+    binding.sendButton.apply {
         updateLayoutParams<ViewGroup.MarginLayoutParams> {
             updateMargins(
                 0, 0, this@apply.context.toPx(16f).toInt(),

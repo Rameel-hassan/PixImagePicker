@@ -27,7 +27,7 @@ internal fun FragmentActivity.setup(
             override fun onStateChanged(bottomSheet: View, newState: Int) {
 
                 if (localState == BottomSheetBehavior.STATE_COLLAPSED && newState == BottomSheetBehavior.STATE_DRAGGING) {
-                    binding.gridLayout.sendButtonStateAnimation(false)
+                    binding.sendButtonStateAnimation(false)
 
                 }
                 binding.root.requestDisallowInterceptTouchEvent(newState == BottomSheetBehavior.STATE_DRAGGING)
@@ -38,7 +38,7 @@ internal fun FragmentActivity.setup(
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
                 manipulateVisibility(this@setup, binding, slideOffset)
                 if (slideOffset == 1f) {
-                    binding.gridLayout.sendButtonStateAnimation(show = false, withAnim = false)
+                    binding.sendButtonStateAnimation(show = false, withAnim = false)
                     callback(true)
                 } else if (slideOffset == 0f) {
                     callback(false)
@@ -53,20 +53,20 @@ private fun manipulateVisibility(
     activity: FragmentActivity, binding: FragmentPixBinding,
     slideOffset: Float
 ) {
-    binding.gridLayout.apply {
+    binding.apply {
         instantRecyclerView.alpha = 1 - slideOffset
         arrowUp.alpha = 1 - slideOffset
-        controlsLayout.controlsLayout.alpha = 1 - slideOffset
+        controlsLayout.alpha = 1 - slideOffset
         topbar.alpha = slideOffset
         recyclerView.alpha = slideOffset
         if (1 - slideOffset == 0f) {
             instantRecyclerView.hide()
             arrowUp.hide()
-            controlsLayout.primaryClickButton.hide()
+            primaryClickButton.hide()
         } else if (instantRecyclerView.isGone && 1 - slideOffset > 0) {
             instantRecyclerView.show()
             arrowUp.show()
-            controlsLayout.primaryClickButton.show()
+            primaryClickButton.show()
         }
         if (slideOffset > 0 && recyclerView.isInvisible) {
             recyclerView.show()

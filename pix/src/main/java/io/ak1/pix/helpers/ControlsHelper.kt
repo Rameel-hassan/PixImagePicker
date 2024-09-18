@@ -29,7 +29,7 @@ import io.ak1.pix.utility.TAG
  */
 
 fun FragmentPixBinding.setDrawableIconForFlash(options: Options) {
-    gridLayout.controlsLayout.flashImage.setImageResource(
+     flashImage.setImageResource(
         when (options.flash) {
             Flash.Off -> R.drawable.ic_flash_off_black_24dp
             Flash.On -> R.drawable.ic_flash_on_black_24dp
@@ -76,21 +76,18 @@ internal fun FragmentPixBinding.setupClickControls(
     options: Options,
     callback: (Int, Uri) -> Unit
 ) {
-    gridLayout.controlsLayout.messageBottom.setText(
+     messageBottom.setText(
         when (options.mode) {
             Mode.Picture -> R.string.pix_bottom_message_without_video
-            else -> R.string.pix_bottom_message_with_video
+            else -> R.string.pix_bottom_message_without_video
         }
     )
-    gridLayout.controlsLayout.primaryClickButton.apply {
-        var videoCounterProgress: Int
+     primaryClickButton.apply {
 
-        val videoCounterHandler = Handler(Looper.getMainLooper())
-        lateinit var videoCounterRunnable: Runnable
 
         setOnClickListener {
             if (options.count <= model.selectionListSize) {
-                gridLayout.sendButton.context.toast(model.selectionListSize)
+                 sendButton.context.toast(model.selectionListSize)
                 return@setOnClickListener
             }
             cameraXManager?.takePhoto { uri, exc ->
@@ -114,7 +111,7 @@ internal fun FragmentPixBinding.setupClickControls(
             }
 
             if (options.count <= model.selectionListSize) {
-                gridLayout.sendButton.context.toast(model.selectionListSize)
+                 sendButton.context.toast(model.selectionListSize)
                 return@setOnLongClickListener false
             }
             callback(4, Uri.EMPTY)
@@ -124,36 +121,36 @@ internal fun FragmentPixBinding.setupClickControls(
         }
         setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_UP || event.action == MotionEvent.ACTION_CANCEL) {
-                gridLayout.controlsLayout.primaryClickBackground.hide()
-                gridLayout.controlsLayout.primaryClickBackground.animate().scaleX(1f).scaleY(1f)
+                 primaryClickBackground.hide()
+                 primaryClickBackground.animate().scaleX(1f).scaleY(1f)
                     .setDuration(300).setInterpolator(
                         AccelerateDecelerateInterpolator()
                     ).start()
-                gridLayout.controlsLayout.primaryClickButton.animate().scaleX(1f)
+                 primaryClickButton.animate().scaleX(1f)
                     .scaleY(1f).setDuration(300).setInterpolator(
                         AccelerateDecelerateInterpolator()
                     ).start()
                 root.requestDisallowInterceptTouchEvent(false)
             } else if (event.action == MotionEvent.ACTION_DOWN) {
-                gridLayout.controlsLayout.primaryClickBackground.show()
-                gridLayout.controlsLayout.primaryClickBackground.animate().scaleX(1.2f).scaleY(1.2f)
+                 primaryClickBackground.show()
+                 primaryClickBackground.animate().scaleX(1.2f).scaleY(1.2f)
                     .setDuration(300).setInterpolator(AccelerateDecelerateInterpolator()).start()
-                gridLayout.controlsLayout.primaryClickButton.animate().scaleX(1.2f)
+                 primaryClickButton.animate().scaleX(1.2f)
                     .scaleY(1.2f).setDuration(300)
                     .setInterpolator(AccelerateDecelerateInterpolator()).start()
                 root.requestDisallowInterceptTouchEvent(true)
             }
             false
         }
-        gridLayout.selectionOk.setOnClickListener { callback(0, Uri.EMPTY) }
-        gridLayout.sendButton.setOnClickListener { callback(0, Uri.EMPTY) }
-        gridLayout.selectionBack.setOnClickListener { callback(1, Uri.EMPTY) }
-        gridLayout.selectionCheck.setOnClickListener {
-            gridLayout.selectionCheck.hide()
+         selectionOk.setOnClickListener { callback(0, Uri.EMPTY) }
+         sendButton.setOnClickListener { callback(0, Uri.EMPTY) }
+         selectionBack.setOnClickListener { callback(1, Uri.EMPTY) }
+         selectionCheck.setOnClickListener {
+             selectionCheck.hide()
             callback(2, Uri.EMPTY)
         }
     }
-    gridLayout.controlsLayout.flashButton.setOnClickForFLash(options) {
+     flashButton.setOnClickForFLash(options) {
         setDrawableIconForFlash(it)
         cameraXManager?.imageCapture?.flashMode = when (options.flash) {
             Flash.Auto -> ImageCapture.FLASH_MODE_AUTO
@@ -162,15 +159,15 @@ internal fun FragmentPixBinding.setupClickControls(
             else -> ImageCapture.FLASH_MODE_AUTO
         }
     }
-    gridLayout.controlsLayout.lensFacing.setOnClickListener {
+     lensFacing.setOnClickListener {
         val oa1 = ObjectAnimator.ofFloat(
-            gridLayout.controlsLayout.lensFacing,
+             lensFacing,
             "scaleX",
             1f,
             0f
         ).setDuration(150)
         val oa2 = ObjectAnimator.ofFloat(
-            gridLayout.controlsLayout.lensFacing,
+             lensFacing,
             "scaleX",
             0f,
             1f
@@ -178,7 +175,7 @@ internal fun FragmentPixBinding.setupClickControls(
         oa1.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator) {
                 super.onAnimationEnd(animation)
-                gridLayout.controlsLayout.lensFacing.setImageResource(R.drawable.ic_photo_camera)
+                lensFacing.setImageResource(R.drawable.ic_photo_camera)
                 oa2.start()
             }
         })
@@ -195,26 +192,26 @@ fun FragmentPixBinding.longSelectionStatus(
     val colorSurface = root.context.color(R.color.surface_color_pix)
 
     if (enabled) {
-        gridLayout.selectionCheck.hide()
-        gridLayout.selectionCount.setTextColor(colorSurface)
-        gridLayout.topbar.setBackgroundColor(colorPrimaryDark)
-        DrawableCompat.setTint(gridLayout.selectionBack.drawable, colorSurface)
-        DrawableCompat.setTint(gridLayout.selectionCheck.drawable, colorSurface)
+        selectionCheck.hide()
+        selectionCount.setTextColor(colorSurface)
+        topbar.setBackgroundColor(colorPrimaryDark)
+        DrawableCompat.setTint(selectionBack.drawable, colorSurface)
+        DrawableCompat.setTint(selectionCheck.drawable, colorSurface)
     } else {
-        gridLayout.selectionCheck.show()
-        DrawableCompat.setTint(gridLayout.selectionBack.drawable, colorPrimaryDark)
-        DrawableCompat.setTint(gridLayout.selectionCheck.drawable, colorPrimaryDark)
-        gridLayout.topbar.setBackgroundColor(colorSurface)
+        selectionCheck.show()
+        DrawableCompat.setTint(selectionBack.drawable, colorPrimaryDark)
+        DrawableCompat.setTint(selectionCheck.drawable, colorPrimaryDark)
+        topbar.setBackgroundColor(colorSurface)
     }
 }
 
 fun FragmentPixBinding.setSelectionText(fragmentActivity: FragmentActivity, size: Int = 0) {
-    gridLayout.selectionCount.text = if (size == 0) {
-        gridLayout.selectionOk.hide()
+    selectionCount.text = if (size == 0) {
+        selectionOk.hide()
         fragmentActivity.resources.getString(R.string.pix_tap_to_select)
     } else {
-        gridLayout.selectionOk.show()
+        selectionOk.show()
         "$size ${fragmentActivity.resources.getString(R.string.pix_selected)}"
     }
-    gridLayout.imgCount.text = size.toString()
+    imgCount.text = size.toString()
 }
